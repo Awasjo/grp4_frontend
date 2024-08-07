@@ -55,7 +55,7 @@ const Predict = () => {
   
       const predictionResult = response.data.prediction;
       console.log(predictionResult);
-      const finalPrediction = predictionResult === 0 ? "Stolen" : "Recovered";
+      const finalPrediction = predictionResult === 0 ? "Likely Not to be Returned" : "Likely to be Returned";
   
       setPrediction(finalPrediction);
     } catch (error) {

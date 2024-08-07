@@ -26,27 +26,37 @@ const Predict = () => {
   };
 
   const handlePredict = async () => {
-    // Convert formData.BIKE_COST to a number
-    const requestData = {
+    // Replace empty strings with 'UNKNOWN' for categorical fields
+    const updatedFormData = {
       ...formData,
-      BIKE_COST: Number(formData.BIKE_COST),
+      BIKE_MODEL: formData.BIKE_MODEL.trim() || "UNKNOWN",
+      PRIMARY_OFFENCE: formData.PRIMARY_OFFENCE.trim() || "UNKNOWN",
+      BIKE_MAKE: formData.BIKE_MAKE.trim() || "UNKNOWN",
+      LOCATION_TYPE: formData.LOCATION_TYPE.trim() || "UNKNOWN",
+      PREMISES_TYPE: formData.PREMISES_TYPE.trim() || "UNKNOWN",
+      // Convert empty strings to 0 for numeric fields
+      REPORT_DOY: formData.REPORT_DOY.trim() !== "" ? Number(formData.REPORT_DOY) : 0,
+      OCC_DOY: formData.OCC_DOY.trim() !== "" ? Number(formData.OCC_DOY) : 0,
+      REPORT_HOUR: formData.REPORT_HOUR.trim() !== "" ? Number(formData.REPORT_HOUR) : 0,
+      BIKE_SPEED: formData.BIKE_SPEED.trim() !== "" ? Number(formData.BIKE_SPEED) : 0,
+      // Convert BIKE_COST to a number, defaulting to 0 if empty
+      BIKE_COST: formData.BIKE_COST.trim() !== "" ? Number(formData.BIKE_COST) : 0,
     };
     try {
       const response = await axios.post(
         "http://127.0.0.1:12345/predict",
-        requestData,
+        updatedFormData,
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
-
+  
       const predictionResult = response.data.prediction;
       console.log(predictionResult);
-      const finalPrediction =
-        predictionResult === 0 ? "Stolen" : "Recovered";
-
+      const finalPrediction = predictionResult === 0 ? "Stolen" : "Recovered";
+  
       setPrediction(finalPrediction);
     } catch (error) {
       console.error("Error predicting:", error.message);
